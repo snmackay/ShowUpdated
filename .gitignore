@@ -1,1 +1,3 @@
 config_local.json
+__pycache__
+show_state.db
