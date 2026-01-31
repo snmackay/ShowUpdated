@@ -182,21 +182,55 @@ def scan_library(root_path: str):
                 print(f"\n Error scanning {entry}: {e}")
 
 
+# -------------------- Do A Full Dir Scan --------------------
+def fullScan(token: str, root_path: str) -> bool : 
+    #TODO write logic for database entry into code
+    print(f"\nScanning TV library: {root_path}")
+
+    for entry in sorted(os.listdir(root_path)):
+        show_path = os.path.join(root_path, entry)
+        if os.path.isdir(show_path):
+            try:
+                scan_show(show_path: str, token: str)
+            except Exception as e:
+                print(f"\n Error scanning {entry}: {e}")
+
+
+    return false
+
+
 # -------------------- Create Database File --------------------
-def createDB():
+def createDB() -> bool:
     if os.path.exists("show_state.db"):
         print("how the fuck did this run?")
         return False
     else:
         conn=sqlite3.connect("show_state.db")
+        #NOTE ended is a boolean field wherein 0 is true, 1 is false
+        #NOTE episodes is a count of the total number of episodes ever released
+        curr = conn.cursor()
+        curr.execute( 
+            '''
+            CREATE TABLE IF NOT EXISTS shows(
+                title TEXT PRIMARY KEY,
+                seasons INTEGER,
+                ended INTEGER, 
+                episodes INTEGER, 
+                studio TEXT
+            )
+            '''
+        )
+        conn.commit() #base db format 
         conn.close()
         return True
 
 # -------------------- MAIN --------------------
 
 def main(run_type: str, root_path: str):
+    token = get_tvdb_token() #grab session token for instance 
     if (run_type == "full" and not os.path.exists("show_state.db")):
-        completed=createDB()
+        completed = createDB()
+        scanned = fullScan(token: str, root_path: str)
         
         #TODO
         sys.exit(0)
