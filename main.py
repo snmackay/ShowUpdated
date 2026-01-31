@@ -59,14 +59,14 @@ def full_scan(token: str, root_path: str) -> bool:
             except Exception as e:
                 print(f"\n Error scanning {entry}: {e}")
         
-        #TODO unpack ret_val
+        #Write out missing seasons for this specific show
         if (ret_val["missing"].length > 0):
             fileOps.write_missing_file(ret_val)
 
+        #write to DB the show details
+        written=fileOps.show_db_write(ret_val)
 
-
-
-    return false
+    return True
 
 
 
