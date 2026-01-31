@@ -60,17 +60,10 @@ def show_db_write(contents: dict) -> bool:
     if record_exists(ID,curr):
         #TODO
         curr.execute(
-            '''UPDATE shows SET seasons = ? WHERE ID = ?''',(seasons,ID)
-        )
-        curr.execute(
-            '''UPDATE shows SET local = ? WHERE ID = ?''',(local,ID)
-        )
-        curr.execute(
-            '''UPDATE shows SET missing = ? WHERE ID = ?''',(missing, ID)
-        )
-        curr.execute(
-            '''UPDATE shows SET ended = ? WHERE ID = ?''', (ended, ID)
-        )
+            """ UPDATE shows SET seasons = ?, local = ?,missing = ?, ended = ? WHERE id = ? """,
+            (seasons, local, missing, ended, ID)
+        )   
+
     else:
         curr.execute(
             '''
@@ -81,7 +74,6 @@ def show_db_write(contents: dict) -> bool:
     conn.commit()
     conn.close()
     
-
     return True
 
 # -------------------- Generate Missing Seasons Text File --------------------

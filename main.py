@@ -99,7 +99,6 @@ def main(run_type: str, root_path: str):
     elif (run_type == "full" and os.path.exists("show_status.db")):
         scanned = full_scan(token, root_path)
         print("Scan complete. Look for file named missing.csv in install directory")
-        #TODO
         sys.exit(0)
     elif (run_type == "update" and os.path.exists("show_status.db")):
         #TODO
