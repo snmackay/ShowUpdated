@@ -23,8 +23,8 @@ def scan_show(token: str, show_path: str) -> dict:
     else:
         best_score, best_match = web.pick_best_match(cleaned_name, results)
 
-        if best_score < 70:
-            print(f"\n  {cleaned_name}: Low confidence match ({best_score}: {results})")
+        if best_score < 90:
+            print(f"\n  {cleaned_name}: Low confidence match ({best_score}: {best_match})")
             x=input("Is this correct y/n: ")
             if x != "y" or "Y":
                 newId = input("Please provide a tvdb ID for the show: ")
@@ -109,7 +109,7 @@ def main(run_type: str, root_path: str):
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         print("Usage: python scan_tv_library_tvdb.py <run type> <tv_library_root>")
         sys.exit(1)
 
