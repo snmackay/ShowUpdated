@@ -1,9 +1,15 @@
 import os
 import re
+import json
 import requests
 from rapidfuzz import fuzz
 
-TVDB_API_KEY = "YOUR_TVDB_API_KEY_HERE"
+def getKey(config):
+    with open(config,'r') as f:
+        contents=json.loads(f)
+        return contents["apiKey"]
+
+TVDB_API_KEY = getKey("config.json")
 
 TVDB_LOGIN_URL = "https://api4.thetvdb.com/v4/login"
 TVDB_SEARCH_URL = "https://api4.thetvdb.com/v4/search"
