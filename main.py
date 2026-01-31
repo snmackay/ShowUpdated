@@ -4,6 +4,7 @@ import json
 import sqlite3
 
 import web
+import fileOps
 
 
 
@@ -46,7 +47,7 @@ def scan_show(token: str, show_path: str) -> dict:
     return ret_val
 
 # -------------------- Do A Full Dir Scan --------------------
-def fullScan(token: str, root_path: str) -> bool: 
+def full_scan(token: str, root_path: str) -> bool: 
     #TODO write logic for database entry into code
     print(f"\nScanning TV library: {root_path}")
 
@@ -57,48 +58,26 @@ def fullScan(token: str, root_path: str) -> bool:
                 ret_val = scan_show(token, show_path )
             except Exception as e:
                 print(f"\n Error scanning {entry}: {e}")
+        
+        #TODO unpack ret_val
+        if (ret_val["missing"].length > 0):
+            fileOps.write_missing_file(ret_val)
+
+
 
 
     return false
 
 
-# -------------------- Create Database File --------------------
-def createDB() -> bool:
-    if os.path.exists("show_state.db"):
-        print("how the fuck did this run?")
-        return False
-    else:
-        conn=sqlite3.connect("show_state.db")
-        #NOTE ended is a boolean field wherein 0 is true, 1 is false
-        #NOTE episodes is a count of the total number of episodes ever released
-        curr = conn.cursor()
-        curr.execute( 
-            '''
-            CREATE TABLE IF NOT EXISTS shows(
-                ID          TEXT PRIMARY KEY,
-                title       TEXT,
-                folder      TEXT,
-                match       TEXT,
-                seasons     INTEGER,
-                local       INTEGER,
-                ended       INTEGER, 
-                episodes    INTEGER, 
-                studio      TEXT
-            )
-            '''
-        )
-        conn.commit() #base db format 
-        conn.close()
-        return True
+
 
 # -------------------- MAIN --------------------
 
 def main(run_type: str, root_path: str):
     token = web.get_tvdb_token() #grab session token for instance 
     if (run_type == "full" and not os.path.exists("show_state.db")):
-        completed = createDB()
-        scanned = fullScan(token, root_path)
-        
+        completed = fileOps.create_DB()
+        scanned = full_scan(token, root_path)
         #TODO
         sys.exit(0)
     elif (run_type == "full" and os.path.exists("show_status.db")):
