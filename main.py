@@ -61,17 +61,20 @@ def full_scan(token: str, root_path: str) -> bool:
         if os.path.isdir(show_path):
             try:
                 ret_val = scan_show(token, show_path )
+
+                #Write out missing seasons for this specific show
+                if ret_val == False:
+                    next
+                if ret_val:
+                    fileOps.write_missing_file(ret_val)
+
+                #write to DB the show details
+                written=fileOps.show_db_write(ret_val)
+
             except Exception as e:
                 print(f"\n Error scanning {entry}: {e}")
         
-        #Write out missing seasons for this specific show
-        if ret_val == False:
-            next
-        if (ret_val["missing"].length > 0):
-            fileOps.write_missing_file(ret_val)
-
-        #write to DB the show details
-        written=fileOps.show_db_write(ret_val)
+        
 
         time.sleep(6)
 
@@ -83,8 +86,9 @@ def full_scan(token: str, root_path: str) -> bool:
 # -------------------- MAIN --------------------
 
 def main(run_type: str, root_path: str):
+    
     token = web.get_tvdb_token() #grab session token for instance 
-    if (run_type == "full" and not os.path.exists("show_state.db")):
+    if (run_type == "full" and not os.path.exists("show_status.db")): #TODO needs to be negated
         completed = fileOps.create_DB()
         scanned = full_scan(token, root_path)
         print("Scan complete. Look for file named missing.csv in install directory")
@@ -110,7 +114,7 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 3:
-        print("Usage: python scan_tv_library_tvdb.py <run type> <tv_library_root>")
+        print("Usage: python3 main.py <run type> <tv_library_root>")
         sys.exit(1)
 
     main(sys.argv[1],sys.argv[2])

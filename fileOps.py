@@ -5,15 +5,12 @@ import csv
 
 # -------------------- Create Database File --------------------
 def create_DB() -> bool:
-    if os.path.exists("show_state.db"):
-        print("how the fuck did this run?")
-        return False
-    else:
-        conn=sqlite3.connect("show_state.db")
-        #NOTE ended is a boolean field wherein 0 is true, 1 is false
-        #NOTE episodes is a count of the total number of episodes ever released
-        curr = conn.cursor()
-        curr.execute( 
+    
+    conn=sqlite3.connect("show_status.db")
+    #NOTE ended is a boolean field wherein 0 is true, 1 is false
+    #NOTE episodes is a count of the total number of episodes ever released
+    curr = conn.cursor()
+    curr.execute( 
             '''
             CREATE TABLE IF NOT EXISTS shows(
                 ID          TEXT PRIMARY KEY,
@@ -23,21 +20,21 @@ def create_DB() -> bool:
                 seasons     TEXT,
                 local       TEXT,
                 ended       TEXT, 
-                missing     TEXT
+                missing     TEXT,
                 episodes    TEXT, 
-                studio      TEXT
+                studio      TEXT,
                 UNIQUE(ID)
             )
             '''
         )
-        conn.commit() #base db format 
-        conn.close()
-        return True
+    conn.commit() #base db format 
+    conn.close()
+    return True
     
 # -------------------- Write Individual Show Details to DB  --------------------
 def show_db_write(contents: dict) -> bool:
     #TODO write out to database a specific show to all fields.
-    conn=sqlite3.connect("showstate.db")
+    conn=sqlite3.connect("show_status.db")
     curr=conn.cursor()
 
     #set up vars for insertion
@@ -45,7 +42,7 @@ def show_db_write(contents: dict) -> bool:
     title =     contents["show"]
     folder =    contents["folder"]
     match =     contents["Score"]
-    seasons =   contents["TVDB Seasons"]
+    seasons =   str(contents["TVDB Seasons"])
     local =     str(contents["Local"])
     ended = "" #TODO
     missing =   str(contents["missing"])
@@ -54,7 +51,7 @@ def show_db_write(contents: dict) -> bool:
 
     curr.execute(
         '''
-        INSERT INTO shows(ID, title, folder, match, seasons, local, ended, missing, episodes, studio)
+        INSERT INTO shows (ID, title, folder, match, seasons, local, ended, missing, episodes, studio)
                   VALUES(?,?,?,?,?,?,?,?,?,?)''', 
         
         (ID,title,folder,match,seasons,local,ended,missing,episodes,studio))  

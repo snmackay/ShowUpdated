@@ -1,4 +1,4 @@
 config_local.json
 __pycache__
-show_state.db
+show_status.db
 missing.csv
