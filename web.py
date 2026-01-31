@@ -64,7 +64,7 @@ def search_tv_show(query: str, token: str):
     )
     response.raise_for_status()
 
-    return response.json().get("data", [])
+    return response.json().get("data", [])    
 
 
 def get_tvdb_seasons(tvdb_id: int, token: str) -> set:

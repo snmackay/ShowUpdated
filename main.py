@@ -2,6 +2,7 @@ import os
 import re
 import json
 import sqlite3
+import time
 
 import web
 import fileOps
@@ -19,11 +20,15 @@ def scan_show(token: str, show_path: str) -> dict:
     if not results:
         print(f"\n❓ {cleaned_name}: No TVDB match found")
         return False
+    else:
+        best_score, best_match = web.pick_best_match(cleaned_name, results)
 
-    best_score, best_match = web.pick_best_match(cleaned_name, results)
-
-    if best_score < 70:
-        print(f"\n  {cleaned_name}: Low confidence match ({best_score})")
+        if best_score < 70:
+            print(f"\n  {cleaned_name}: Low confidence match ({best_score}: {results})")
+            x=input("Is this correct y/n: ")
+            if x != "y" or "Y":
+                newId = input("Please provide a tvdb ID for the show: ")
+                best_match["tvdb_id"] = newId        
 
     tvdb_id = best_match["tvdb_id"]
     tvdb_seasons = web.get_tvdb_seasons(tvdb_id, token)
@@ -60,11 +65,15 @@ def full_scan(token: str, root_path: str) -> bool:
                 print(f"\n Error scanning {entry}: {e}")
         
         #Write out missing seasons for this specific show
+        if ret_val == False:
+            next
         if (ret_val["missing"].length > 0):
             fileOps.write_missing_file(ret_val)
 
         #write to DB the show details
         written=fileOps.show_db_write(ret_val)
+
+        time.sleep(6)
 
     return True
 
@@ -78,6 +87,7 @@ def main(run_type: str, root_path: str):
     if (run_type == "full" and not os.path.exists("show_state.db")):
         completed = fileOps.create_DB()
         scanned = full_scan(token, root_path)
+        print("Scan complete. Look for file named missing.csv in install directory")
         #TODO
         sys.exit(0)
     elif (run_type == "full" and os.path.exists("show_status.db")):
