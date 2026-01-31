@@ -1,6 +1,7 @@
 import os
 import re
 import json
+import sqlite3
 import requests
 from rapidfuzz import fuzz
 
@@ -178,16 +179,48 @@ def scan_library(root_path: str):
             try:
                 scan_show(show_path, token)
             except Exception as e:
-                print(f"\n💥 Error scanning {entry}: {e}")
+                print(f"\n Error scanning {entry}: {e}")
 
+
+# -------------------- Create Database File --------------------
+def createDB():
+    if os.path.exists("show_state.db"):
+        print("how the fuck did this run?")
+        return False
+    else:
+        conn=sqlite3.connect("show_state.db")
+        conn.close()
+        return True
 
 # -------------------- MAIN --------------------
+
+def main(run_type: str, root_path: str):
+    if (run_type == "full" and not os.path.exists("show_state.db")):
+        completed=createDB()
+        
+        #TODO
+        sys.exit(0)
+    elif (run_type == "full" and os.path.exists("show_status.db")):
+        #TODO
+        sys.exit(0)
+    elif (run_type == "update" and os.path.exists("show_status.db")):
+        #TODO
+        sys.exit(0)
+    elif (run_type == "update" and not os.path.exists("show_status.db")):
+        print("exception: show_status.db does not exist")
+        sys.exit(1)
+    else:
+        print("exception: invalid argument structure")
+        sys.exit(1)
+
+
+    
 
 if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:
-        print("Usage: python scan_tv_library_tvdb.py <tv_library_root>")
+        print("Usage: python scan_tv_library_tvdb.py <run type> <tv_library_root>")
         sys.exit(1)
 
-    scan_library(sys.argv[1])
+    main(sys.argv[1],sys.argv[2])
