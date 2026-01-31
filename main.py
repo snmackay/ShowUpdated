@@ -28,7 +28,9 @@ def scan_show(token: str, show_path: str) -> dict:
             x=input("Is this correct y/n: ")
             if x != "y" or "Y":
                 newId = input("Please provide a tvdb ID for the show: ")
-                best_match["tvdb_id"] = newId        
+                best_match["tvdb_id"] = newId
+
+    print(best_match)        
 
     tvdb_id = best_match["tvdb_id"]
     tvdb_seasons = web.get_tvdb_seasons(tvdb_id, token)
@@ -46,6 +48,7 @@ def scan_show(token: str, show_path: str) -> dict:
     ret_val["Local"] = sorted(local_seasons)
     ret_val["missing"] =missing
     ret_val["extra"] = extra
+    ret_val["status"] =best_match.get('status')
 
     print(ret_val)
     
@@ -88,13 +91,14 @@ def full_scan(token: str, root_path: str) -> bool:
 def main(run_type: str, root_path: str):
     
     token = web.get_tvdb_token() #grab session token for instance 
-    if (run_type == "full" and not os.path.exists("show_status.db")): #TODO needs to be negated
+    if (run_type == "full" and not os.path.exists("show_status.db")): 
         completed = fileOps.create_DB()
         scanned = full_scan(token, root_path)
         print("Scan complete. Look for file named missing.csv in install directory")
-        #TODO
         sys.exit(0)
     elif (run_type == "full" and os.path.exists("show_status.db")):
+        scanned = full_scan(token, root_path)
+        print("Scan complete. Look for file named missing.csv in install directory")
         #TODO
         sys.exit(0)
     elif (run_type == "update" and os.path.exists("show_status.db")):

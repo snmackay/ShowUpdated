@@ -30,7 +30,15 @@ def create_DB() -> bool:
     conn.commit() #base db format 
     conn.close()
     return True
-    
+
+# -------------------- Check If Show Is In DB  --------------------
+def record_exists(ID: str, curr) ->bool: 
+    curr.execute(
+        "SELECT 1 FROM shows WHERE id = ? LIMIT 1",
+        (ID,)
+    )
+    return curr.fetchone() is not None
+
 # -------------------- Write Individual Show Details to DB  --------------------
 def show_db_write(contents: dict) -> bool:
     #TODO write out to database a specific show to all fields.
@@ -44,17 +52,32 @@ def show_db_write(contents: dict) -> bool:
     match =     contents["Score"]
     seasons =   str(contents["TVDB Seasons"])
     local =     str(contents["Local"])
-    ended = "" #TODO
+    ended =     contents["status"]
     missing =   str(contents["missing"])
     episodes = "" #TODO
     studio = "" #TODO
 
-    curr.execute(
-        '''
-        INSERT INTO shows (ID, title, folder, match, seasons, local, ended, missing, episodes, studio)
+    if record_exists(ID,curr):
+        #TODO
+        curr.execute(
+            '''UPDATE shows SET seasons = ? WHERE ID = ?''',(seasons,ID)
+        )
+        curr.execute(
+            '''UPDATE shows SET local = ? WHERE ID = ?''',(local,ID)
+        )
+        curr.execute(
+            '''UPDATE shows SET missing = ? WHERE ID = ?''',(missing, ID)
+        )
+        curr.execute(
+            '''UPDATE shows SET ended = ? WHERE ID = ?''', (ended, ID)
+        )
+    else:
+        curr.execute(
+            '''
+            INSERT INTO shows (ID, title, folder, match, seasons, local, ended, missing, episodes, studio)
                   VALUES(?,?,?,?,?,?,?,?,?,?)''', 
         
-        (ID,title,folder,match,seasons,local,ended,missing,episodes,studio))  
+            (ID,title,folder,match,seasons,local,ended,missing,episodes,studio))  
     conn.commit()
     conn.close()
     
