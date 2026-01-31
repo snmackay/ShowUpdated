@@ -17,6 +17,10 @@ Running ShowUpdated relies on the use of a terminal window
 * Go into your file manager window and find the path to the root directory of your shows directory.
 * Copy this directory as complete path
 * You may now run ShowUpdated.
-* - 'python 3 main.py full <path to directory> '
+  - 'python3 main.py full <\path to directory>\ '
+  - python3 - specifies the version of python
+  - main.py - name of the main file
+  - full - argument that specifies the type of scan that will be performed. This will change later. 
+  - the path to your root directory of tv shows.
 
 
