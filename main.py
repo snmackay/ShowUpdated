@@ -4,6 +4,7 @@ import json
 import requests
 from rapidfuzz import fuzz
 
+#retrieve API key from config.json
 def getKey(config):
     with open(config,'r') as f:
         contents=json.loads(f)
@@ -135,7 +136,7 @@ def scan_show(show_path: str, token: str):
     best_score, best_match = pick_best_match(cleaned_name, results)
 
     if best_score < 70:
-        print(f"\n⚠️  {cleaned_name}: Low confidence match ({best_score})")
+        print(f"\n  {cleaned_name}: Low confidence match ({best_score})")
         return
 
     tvdb_id = best_match["tvdb_id"]
