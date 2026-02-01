@@ -27,6 +27,9 @@ def scan_show(token: str, show_path: str) -> dict:
 
 
     cleaned_name = web.clean_folder_name(show_path)
+    show_year = web.extract_year(show_path)
+    print(cleaned_name)
+    print(show_year)
     print(f"Scanning show: {cleaned_name}")
     results = web.search_tv_show(cleaned_name, token)
 
@@ -34,7 +37,7 @@ def scan_show(token: str, show_path: str) -> dict:
         print(f"\n {cleaned_name}: No TVDB match found")
         return "Fuck"
     else:
-        best_score, best_match = web.pick_best_match(cleaned_name, results)
+        best_score, best_match = web.pick_best_match(cleaned_name, show_year, results)
 
         if best_score < 90:
             print(f"{change_colour('green')}\n Low confidence match: {change_colour('blue')}({best_score})")
@@ -124,7 +127,6 @@ def main(run_type: str, root_path: str):
 
 
 # -------------------- RUNNER --------------------
-
 if __name__ == "__main__":
     import sys
 
