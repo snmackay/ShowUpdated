@@ -3,6 +3,7 @@ import re
 import requests
 import json
 from rapidfuzz import fuzz
+import unicodedata
 
 
 
@@ -14,7 +15,7 @@ def getKey(config):
         return contents["apiKey"]
 
 #globals
-TVDB_API_KEY = getKey("config_local.json")
+TVDB_API_KEY = getKey("config.json")
 TVDB_LOGIN_URL = "https://api4.thetvdb.com/v4/login"
 TVDB_SEARCH_URL = "https://api4.thetvdb.com/v4/search"
 TVDB_SERIES_EXTENDED_URL = "https://api4.thetvdb.com/v4/series/{id}/extended"
@@ -69,7 +70,8 @@ def search_tv_show(query: str, token: str):
     )
     response.raise_for_status()
 
-    return response.json().get("data", [])   
+    
+    return response.json().get("data",[]) 
 
 # -------------------- Grab List of Seasons --------------------
 def get_tvdb_seasons(tvdb_id: int, token: str) -> set:

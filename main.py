@@ -25,9 +25,7 @@ def scan_show(token: str, show_path: str) -> dict:
 
     cleaned_name = web.clean_folder_name(show_path)
     show_year = web.extract_year(show_path)
-    print(cleaned_name)
-    print(show_year)
-    print(f"Scanning show: {cleaned_name}")
+    print(f"Scanning show: {cleaned_name}({show_year})")
     results = web.search_tv_show(cleaned_name, token)
 
     if not results:
@@ -79,13 +77,12 @@ def full_scan(token: str, root_path: str) -> bool:
                 ret_val = scan_show(token, show_path )
 
                 #Write out missing seasons for this specific show
-                if ret_val == "Fuck":
-                    next
-                if len(ret_val['missing'])>0:
-                    fileOps.write_missing_file(ret_val)
+                if str(type(ret_val)) != 'str': 
+                    if len(ret_val['missing'])>0:
+                        fileOps.write_missing_file(ret_val)
 
-                #write to DB the show details
-                written=fileOps.show_db_write(ret_val)
+                    #write to DB the show details
+                    written=fileOps.show_db_write(ret_val)
 
             except Exception as e:
                 print(f"\n Error scanning {entry}: {e}")
