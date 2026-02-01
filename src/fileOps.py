@@ -1,6 +1,7 @@
 import sqlite3
-import os
 import csv
+import os
+import time
 
 
 # -------------------- Create Database File --------------------
@@ -78,13 +79,30 @@ def show_db_write(contents: dict) -> bool:
 
 # -------------------- Generate Missing Seasons Text File --------------------
 def write_missing_file(materials: dict) ->bool:
+
+    file_exists = os.path.exists("missing.csv")
+
     with open("missing.csv","a") as f:
         writer=csv.writer(f)
-        writer.writerow([materials["show"]])
-        writer.writerow([materials["TVDB ID"]])
-        writer.writerow(materials["missing"])
+        if not file_exists:
+            writer.writerow(["Show Title","Folder Name", "TVDB ID", "Missing Season #'s"])
+        builtRow=[]
+        builtRow.append(materials["show"])
+        builtRow.append(materials["folder"])
+        builtRow.append(materials["TVDB ID"])
+        builtRow.append(materials["missing"])
+        writer.writerow(builtRow)
     f.close
 
     return True
+
+# -------------------- Log Errors During Search --------------------
+def write_error_log(file: str, error: str) -> None:
+    with open("./log/error_log_"+str(time.time())+"_.txt", "a") as f:
+        f.write("Error Entry \n")
+        f.write(file + "\n")
+        f.write(str(error) + "\n")
+        f.close()
+
 
 

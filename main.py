@@ -1,7 +1,4 @@
 import os
-import re
-import json
-import sqlite3
 import time
 
 import src.web as web
@@ -92,6 +89,7 @@ def full_scan(token: str, root_path: str) -> bool:
 
             except Exception as e:
                 print(f"\n Error scanning {entry}: {e}")
+                fileOps.write_error_log(entry,e)
         
         time.sleep(2)
 
