@@ -1,5 +1,6 @@
 import os
 import time
+import sys
 
 import src.web as web
 import src.fileOps as fileOps
@@ -95,9 +96,9 @@ def full_scan(token: str, root_path: str) -> bool:
 
 
 
-# -------------------- MAIN --------------------
+# -------------------- Handler function for different launch types --------------------
 
-def main(run_type: str, root_path: str):
+def handler(run_type: str, root_path: str):
     
     token = web.get_tvdb_token() #grab session token for instance 
     if (run_type == "full" and not os.path.exists("show_status.db")): 
@@ -120,13 +121,14 @@ def main(run_type: str, root_path: str):
         print("exception: invalid argument structure")
         sys.exit(1)
 
+# -------------------- MAIN --------------------
+def main():
+    print("Welcome to TrackARR")
+    print("Specify run flags here")
+    type = input("Specify 'full' for full or 'update' for update: ")
+    path = input("Please provide the path to your shows directory: ")
+    handler(type,path)
 
 # -------------------- RUNNER --------------------
 if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) != 3:
-        print("Usage: python3 main.py <run type> <tv_library_root>")
-        sys.exit(1)
-
-    main(sys.argv[1],sys.argv[2])
+    main()

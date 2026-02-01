@@ -15,7 +15,7 @@ def getKey(config):
         return contents["apiKey"]
 
 #globals
-TVDB_API_KEY = getKey("config.json")
+TVDB_API_KEY = getKey("config_local.json")
 TVDB_LOGIN_URL = "https://api4.thetvdb.com/v4/login"
 TVDB_SEARCH_URL = "https://api4.thetvdb.com/v4/search"
 TVDB_SERIES_EXTENDED_URL = "https://api4.thetvdb.com/v4/series/{id}/extended"
