@@ -27,6 +27,7 @@ def scan_show(token: str, show_path: str) -> dict:
 
 
     cleaned_name = web.clean_folder_name(show_path)
+    print(f"Scanning show: {cleaned_name}")
     results = web.search_tv_show(cleaned_name, token)
 
     if not results:
@@ -41,12 +42,12 @@ def scan_show(token: str, show_path: str) -> dict:
             print(f"{change_colour('yellow')} Name found: {change_colour('blue')}{best_match['name']}")
             print(f"{change_colour('yellow')} TVDB ID: {change_colour('blue')}{best_match['id']}{change_colour('res')}")
             x=input("Is this correct y/n: ")
-            if x != "y" and x != "Y":
+            while x!= 'y' and x != "Y": 
                 newId = input("Please provide a tvdb ID for the show: ")
-                best_match["tvdb_id"] = newId
-            else:
-                x =x 
-
+                results = web.search_tv_show(newId,token)
+                best_match = results[0]
+                x = input(f"Is {change_colour('green')}({best_match['name']}){change_colour('res')} this correct y/n: ")
+        
     tvdb_id = best_match["tvdb_id"]
     tvdb_seasons = web.get_tvdb_seasons(tvdb_id, token)
     local_seasons = web.get_local_seasons(show_path)
@@ -69,7 +70,6 @@ def scan_show(token: str, show_path: str) -> dict:
 
 # -------------------- Do A Full Dir Scan --------------------
 def full_scan(token: str, root_path: str) -> bool: 
-    #TODO write logic for database entry into code
     print(f"\nScanning TV library: {root_path}")
 
     for entry in sorted(os.listdir(root_path)):
@@ -117,6 +117,7 @@ def main(run_type: str, root_path: str):
     elif (run_type == "update" and not os.path.exists("show_status.db")):
         print("exception: show_status.db does not exist")
         sys.exit(1)
+    
     else:
         print("exception: invalid argument structure")
         sys.exit(1)

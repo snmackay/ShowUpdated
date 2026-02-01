@@ -14,7 +14,7 @@ def getKey(config):
         return contents["apiKey"]
 
 #globals
-TVDB_API_KEY = getKey("config.json")
+TVDB_API_KEY = getKey("config_local.json")
 TVDB_LOGIN_URL = "https://api4.thetvdb.com/v4/login"
 TVDB_SEARCH_URL = "https://api4.thetvdb.com/v4/search"
 TVDB_SERIES_EXTENDED_URL = "https://api4.thetvdb.com/v4/series/{id}/extended"
@@ -24,7 +24,6 @@ TVDB_SERIES_EXTENDED_URL = "https://api4.thetvdb.com/v4/series/{id}/extended"
 
 def clean_folder_name(folder_name: str) -> str:
     name = os.path.basename(folder_name)
-
     patterns = [
         r"\bS\d{1,2}E\d{1,2}\b",
         r"\bS\d{1,2}\b",
@@ -64,7 +63,27 @@ def search_tv_show(query: str, token: str):
     )
     response.raise_for_status()
 
-    return response.json().get("data", [])    
+    return response.json().get("data", [])   
+
+#replace contents of dictionary where it has matched to the wrong show. 
+def search_id(query: str, token: str) -> tuple:
+
+    headers = {"Authorization": f"Bearer {token}"
+               }
+
+    url = f"https://api4.thetvdb.com/v4/series/{query}"
+
+    try:
+
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return (True,response.json()["data"])
+    except Exception as e:
+        print("This is not a valid TVDB ID.") 
+        return (False,{})
+
+    
+
 
 
 def get_tvdb_seasons(tvdb_id: int, token: str) -> set:
