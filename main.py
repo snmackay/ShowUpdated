@@ -4,33 +4,48 @@ import json
 import sqlite3
 import time
 
-import web
-import fileOps
+import src.web as web
+import src.fileOps as fileOps
 
-
-
-
+# -------------------- Colour Handler --------------------
+def change_colour(arg: str) -> str:
+    match arg:
+        case 'res':
+            return "\033[0m"
+        case 'red': 
+            return "\033[31m"
+        case 'green':
+            return "\033[32m"
+        case 'yellow':
+            return "\033[33m"
+        case 'blue':
+            return "\033[34m"
 
 # -------------------- Scan and Handle a Show --------------------
 
 def scan_show(token: str, show_path: str) -> dict:
+
+
     cleaned_name = web.clean_folder_name(show_path)
     results = web.search_tv_show(cleaned_name, token)
 
     if not results:
-        print(f"\n❓ {cleaned_name}: No TVDB match found")
-        return False
+        print(f"\n {cleaned_name}: No TVDB match found")
+        return "Fuck"
     else:
         best_score, best_match = web.pick_best_match(cleaned_name, results)
 
         if best_score < 90:
-            print(f"\n  {cleaned_name}: Low confidence match ({best_score}: {best_match})")
+            print(f"{change_colour('green')}\n Low confidence match: {change_colour('blue')}({best_score})")
+            print(f"{change_colour('green')} Name in Directory: {change_colour('blue')}{cleaned_name}")
+            print(f"{change_colour('yellow')} Name found: {change_colour('blue')}{best_match['name']}")
+            print(f"{change_colour('yellow')} TVDB ID: {change_colour('blue')}{best_match['id']}{change_colour('res')}")
             x=input("Is this correct y/n: ")
-            if x != "y" or "Y":
+            if x != "y" and x != "Y":
                 newId = input("Please provide a tvdb ID for the show: ")
                 best_match["tvdb_id"] = newId
-
-    print(best_match)        
+            else:
+                x =x 
 
     tvdb_id = best_match["tvdb_id"]
     tvdb_seasons = web.get_tvdb_seasons(tvdb_id, token)
@@ -49,8 +64,6 @@ def scan_show(token: str, show_path: str) -> dict:
     ret_val["missing"] =missing
     ret_val["extra"] = extra
     ret_val["status"] =best_match.get('status')
-
-    print(ret_val)
     
     return ret_val
 
@@ -66,9 +79,9 @@ def full_scan(token: str, root_path: str) -> bool:
                 ret_val = scan_show(token, show_path )
 
                 #Write out missing seasons for this specific show
-                if ret_val == False:
+                if ret_val == "Fuck":
                     next
-                if ret_val:
+                if len(ret_val['missing'])>0:
                     fileOps.write_missing_file(ret_val)
 
                 #write to DB the show details
@@ -77,9 +90,7 @@ def full_scan(token: str, root_path: str) -> bool:
             except Exception as e:
                 print(f"\n Error scanning {entry}: {e}")
         
-        
-
-        time.sleep(6)
+        time.sleep(2)
 
     return True
 

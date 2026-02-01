@@ -2,3 +2,5 @@ config_local.json
 __pycache__
 show_status.db
 missing.csv
+db
+.DS_Store
