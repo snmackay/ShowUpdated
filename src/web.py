@@ -3,7 +3,6 @@ import re
 import requests
 import json
 from rapidfuzz import fuzz
-import unicodedata
 
 
 

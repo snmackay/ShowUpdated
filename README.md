@@ -2,7 +2,7 @@
 
 ### TrackARR is a simple program to show what shows in your personal media collection are currently up to date and what are missing seasons.
 
-This program is very much in early early alpha. 
+This program is very much in early alpha. 
 Changes will be made over the coming weeks to add new functionality, fix bugs, and clean up how it works. 
 
 ## Installation Instructions:
@@ -22,5 +22,13 @@ Running ShowUpdated relies on the use of a terminal window
   - main.py - name of the main file
   - full - argument that specifies the type of scan that will be performed. This will change later. 
   - the path to your root directory of tv shows.
+
+## Proposed Functionality:
+  * Tracking of individual episodes
+  * Easy production of csv of entire server
+  * Additional database information stored
+  * Web server to hook UI to
+  * Rudimentary web interface for gui access
+  
 
 

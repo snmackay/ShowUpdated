@@ -1,7 +1,6 @@
 import sqlite3
 import csv
 import os
-import time
 
 
 # -------------------- Create Database File --------------------
