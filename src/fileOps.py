@@ -103,5 +103,22 @@ def write_error_log(file: str, error: str) -> None:
         f.write(str(error) + "\n")
         f.close()
 
+# -------------------- Produce CSV of complete database --------------------
+def db_to_csv(in_file: str,out_file:str) -> None:
+    
+    conn = sqlite3.connect(in_file)
+    cursor = conn.cursor()
+
+    cursor.execute(f"SELECT * FROM shows")
+    rows = cursor.fetchall()
+
+    column_names = [description[0] for description in cursor.description]
+
+    with open(out_file, "w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(column_names)  # header
+        writer.writerows(rows)
+
+    conn.close()
 
 
