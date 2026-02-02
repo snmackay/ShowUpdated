@@ -98,7 +98,7 @@ def write_missing_file(materials: dict) ->bool:
 
 # -------------------- Log Errors During Search --------------------
 def write_error_log(file: str, error: str) -> None:
-    with open("./log/error_log_"+str(time.time())+"_.txt", "a") as f:
+    with open("./log/error_log.txt", "a") as f:
         f.write("Error Entry \n")
         f.write(file + "\n")
         f.write(str(error) + "\n")
